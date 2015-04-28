@@ -65,3 +65,13 @@ gapminder %>%
 ```
 
 There is not much of a difference (~7 year spread) in life expectance means across all continents with the exception of Africa where the mean is almost 20 years less. The minimum life expectancy is also much lower for Africa, as well as Asia, compared to the other continents. Max life expectancies are the very similar across all.
+
+Now for global life expectancies. Here are two histograms
+```{r, global_life}
+ggplot(gapminder,aes(x=lifeExp))+
+  geom_histogram(fill="turquoise",color="black")
+
+ggplot(gapminder,aes(x=lifeExp))+
+  geom_histogram(binwidth = .5, fill="turquoise",color="black")
+```
+
