@@ -23,8 +23,6 @@ p3
 # color points by continent
 p3 + aes(color=continent)
 
-#review
-ggplot(gapminder, aes(x=gdpPercap, y=lifeExp)) + scale_x_log10() + geom_point()
 
 # Challenge:  make scatterplot of lifeExp vs gdpPercap with only China data
 ggplot((gapminder %>% filter(country == "China")), aes(x=gdpPercap, y=lifeExp)) + 
@@ -37,21 +35,32 @@ p_china <- gapminder %>%
 
 # Challenge: try size, shape, color aesthetics, 
 # both with categorical variables (e.g., continent) and numeric variables (e.g., pop)
-ggplot(gapminder, aes(x=gdpPercap, y=lifeExp, 
-                      color=continent, size=pop, shape=continent)) + 
-  scale_x_log10() + geom_point()
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp, size=pop, shape=continent)) + 
+  scale_x_log10() + geom_point() + aes(color=country)
 
+##LAYERS-  can add multiple layers to a ggplot using geom and aes, the most recent entry will layer on top of the previous
 # add multiple layers (each call to geom_* creates new layer)
-ggplot((gapminder %>% filter(country == "China")), aes(x=gdpPercap, y=lifeExp)) + 
-  geom_point(size = 5, alpha = 0.7, aes(color=year)) + geom_line(color = "violet")
+gapminder %>%
+  filter(country=="China") %>%
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_point(size=3, aes(color=year))+
+  geom_line(color="violet")
 
+#to have the points on top of the lines, switch the order
+gapminder %>%
+  filter(country=="China") %>%
+  ggplot(aes(x=gdpPercap, y=lifeExp))+
+  geom_line(color="violet")+
+  geom_point(size=3, aes(color=year))
+  
 # Challenge: make plot of lifeExp vs gdpPercap for China and India
 # with lines in black but points colored by country.
-ggplot((gapminder %>% filter(country == "China" | country == "India")), aes(x=gdpPercap, y=lifeExp)) + 
-  geom_point(aes(color = country), size = 5) + geom_line(aes(group=country), color="black") 
-# or
-ggplot((gapminder %>% filter(country %in% c("China", "India"))), aes(x=gdpPercap, y=lifeExp)) + 
-  geom_point(aes(color = country), size = 5) + geom_line(aes(group=country), color="black")
+gapminder %>%
+  filter(country %in% c("China","India")) %>%     #use %in% for this if,or statment
+  ggplot(aes(x=gdpPercap, y=lifeExp)) +
+  geom_line(aes(group=country),color="black") +    #group=country sets it as two lines by country
+  geom_point(size = 4, aes(color=country))   #these colors apply to points only
+  
 
 # make a histogram
 gapminder %>%
@@ -63,25 +72,27 @@ gapminder %>%
   filter(year==2007) %>%
   ggplot(aes(y=lifeExp, x=continent)) + geom_boxplot(fill="aquamarine", width=0.8)
 
-# make a point plot
+# make a point plot overlaying a boxplot, again layering concept
 gapminder %>%
   filter(year==2007) %>%
   ggplot(aes(y=lifeExp, x=continent)) + geom_boxplot() +
-  geom_point(position=position_jitter(width=0.1, height=0), aes(color=continent)) 
+  geom_point(position=position_jitter(width=0.1, height=0), aes(color=continent))    #jitter points to make data easier to interpret
 
 # FACETING, splitting the data:  facet_grid(), facet_wrap()
 # facet_grid() splits either vertically or horizontally depending on where you put the ~
-# facet_wrap() simply wraps individual facets
-ggplot(gapminder, aes(x=gdpPercap, y=lifeExp)) + geom_point() + scale_x_log10() + facet_grid(continent ~ .)
-ggplot(gapminder, aes(x=gdpPercap, y=lifeExp)) + geom_point() + scale_x_log10() + facet_grid(~ continent)
-ggplot(gapminder, aes(x=gdpPercap, y=lifeExp)) + geom_point() + scale_x_log10() + facet_grid(continent ~ year)
+# facet_wrap() simply wraps individual facets, operates like wrap text in excel, best if you have more than a few plots
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp)) + geom_point() + scale_x_log10() + facet_grid(continent ~ .)   #horizontal stack
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp)) + geom_point() + scale_x_log10() + facet_grid(~ continent)      #vertical stack
+ggplot(gapminder, aes(x=gdpPercap, y=lifeExp)) + geom_point() + scale_x_log10() + facet_grid(continent ~ year)  #by 2 variables
 
 ggplot(gapminder, aes(x=gdpPercap, y=lifeExp, color=continent)) + geom_point() + scale_x_log10() + facet_wrap(~year)
 
 # Challenge: select 5 countries, plot lifeExp vs gdpPercap across time (with geom_line), facet by country
 plot <- gapminder %>%
-  filter(country == "India" | country == "New Zealand" | country == "China" | country == "Iceland" | country == "Iran") %>%
-  ggplot(aes(y=lifeExp, x=gdpPercap)) + geom_line(aes(color=country)) + facet_wrap(~ country)
-
+  filter(country %in% c("India","Finland","China","Iceland","Iran")) %>%
+  ggplot(aes(x=gdpPercap, y=lifeExp)) + 
+    geom_line(aes(color=country)) + 
+    facet_wrap(~country)
+#plot is object,  need to call it if you want to see it in RStudio
 # SAVE AS (png, pdf, etc)
-ggsave("figures/plot.png", plot, height=7, width=10)
+ggsave("figures/plot.pdf", plot, height=7, width=10)
