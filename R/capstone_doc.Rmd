@@ -16,7 +16,7 @@ library(ggplot2)
 #For load_libraries, the code and results will be hidden and if the code chunk gives a message or warning it will not be shown in the html.
 ```
 
-#Gapminder Report for New Zealand, India, Italy
+#Gapminder Report
 
 This report will provide some information about life expectancy and GDP per capita for New Zealand, India, and Italy using the gapminder dataset.
 
@@ -52,3 +52,16 @@ ggplot(gm_3,aes(y=gdpPercap, x=year, color=country))+
 ```
 
 From these results I observe that, while both the GDPs for Italy and New Zealand (*first world countries*) increase over time, the rate of increase has been steadily increasing for Italy while that of New Zealand dipped down sharply in the mid-1990s (approximately) before continuing to increase at a similar rate to Italy, though lower value. India (*third world country*) has a far lower GDP per capita than India or Italy; perhaps a result of a very large population. What do you think?
+
+
+Now, let's take a look at life expectancy statistics from 2007 by continent.
+```{r, lifeExp_2007, }
+gapminder %>%
+  filter(year=="2007") %>%
+  group_by(continent) %>%
+  summarize(maxLife = max(lifeExp),
+            minLife = min(lifeExp),
+            meanLife = mean(lifeExp))
+```
+
+There is not much of a difference (~7 year spread) in life expectance means across all continents with the exception of Africa where the mean is almost 20 years less. The minimum life expectancy is also much lower for Africa, as well as Asia, compared to the other continents. Max life expectancies are the very similar across all.
