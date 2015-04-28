@@ -1,4 +1,7 @@
 figures/
+*~
+.DS_Store
+.#*
 *.png
 .Rhistory
 .RData
