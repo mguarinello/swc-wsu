@@ -1,0 +1,99 @@
+---
+title: "swc wsu documentation"
+author: "Marisa Guarinello"
+date: "April 28, 2015"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+------------
+
+```{r,global_knitr_options, include=FALSE}
+knitr::opts_chunk$set(ECHO=FALSE,
+                      fig.path="../figures/")
+#Here is a global option to echo=false for all code chunks. 
+```
+
+
+#Using this for header 1 as a Title
+##Using this as header 2 for a subtitle
+
+Example:  
+
+#SWC-WSU Documentation  
+##M.Guarinello
+
+Superscript the 2 this way x^2^  
+Subscript the 2 this way x~2~  
+
+* This creates a bullet point
+    + Use 4 spaces instead of tab to make the sub-bullet
+* This one too
+* End of bulleted list
+
+1. Numbered list using numbers
+2. Number 2
+3. Etc.
+
+* This will be in italics*  
+_this will also be in italics_
+**This will be bold**
+__this will also be bold__  
+
+Here is a link http://www.google.com  
+Here it is as the word [google](http://www.google.com)
+
+```{r, load_libraries, echo=FALSE, results="hide", message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+#For load_libraries, the code and results will be hidden and if the code chunk gives a message or warning it will not be shown in the html.
+
+```
+
+
+```{r, load_data, echo=FALSE}
+gapminder <- read.csv("../data/gapminder.csv")
+
+```
+
+Here are the first 6 lines of the data:
+```{r, head_gapminder, echo=FALSE}
+head(gapminder)
+```
+
+Here is a plot of the GDP Per Capita by year for New Zealand
+```{r, plot_NZ, echo=FALSE}
+plot_country <-
+  function(country, data=gapminder) {  
+    s_country <- country
+    data %>%
+      filter(country==s_country) %>%
+      ggplot(aes(x=gdpPercap, y=lifeExp, color=year))+
+      geom_point()+
+      scale_x_log10()
+  }
+
+plot_country("New Zealand") 
+```
+
+Here is a plot of Life Expectancy over time by Continent
+```{r, plot_lifeExp_cont, echo=FALSE}
+ggplot(gapminder,aes(x=year,y=lifeExp, color=continent))+
+  geom_point()+
+  scale_x_log10()+
+  facet_wrap(~year)
+```
+
+This is an example of inline code in R.
+This gapminder data has `r nrow(gapminder)` rows and `r ncol(gapminder)` columns.
+
+```{r, ave_life_exp_for_china, include=FALSE}
+ale_china <- gapminder %>%
+  filter(country =="China") %>%
+  summarize(ave=mean(lifeExp))
+```
+
+I get the average life expectancy for China, averaged across years, as `r round(ale_china, 1)`.

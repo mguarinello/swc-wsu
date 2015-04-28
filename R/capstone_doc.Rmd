@@ -1,0 +1,54 @@
+---
+title: "capstone_doc"
+author: "Marisa Guarinello"
+date: "April 28, 2015"
+output: html_document
+-----
+
+```{r,global_knitr_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, fig.path="../figures/")
+#Here are global options to echo=false for all code chunks and where to save figures. 
+```
+
+```{r, load_libraries, echo=FALSE, results="hide", message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+#For load_libraries, the code and results will be hidden and if the code chunk gives a message or warning it will not be shown in the html.
+```
+
+#Gapminder Report for New Zealand, India, Italy
+
+This report will provide some information about life expectancy and GDP per capita for New Zealand, India, and Italy using the gapminder dataset.
+
+```{r, load_data}
+gapminder <- read.csv("../data/gapminder.csv")
+```
+
+```{r, filter_3}
+gm_3 <- gapminder %>%
+  filter(country %in% (c("New Zealand","India","Italy")))
+```
+
+Here are the first 6 lines of the data set.
+```{r,head_gm_3}
+head(gm_3)
+```
+
+This dataset for these 3 countries has `r nrow(gm_3)` rows and `r ncol(gm_3)` columns.
+
+Here are plots showing GDP per capita over time for each of the 3 countries
+```{r,plot}
+ggplot(gm_3,aes(y=gdpPercap, x=year, color=year))+
+  geom_point(size=4)+
+  scale_x_log10()+
+  facet_wrap(~ country)
+```
+
+Let's look at the same data on one plot
+```{r,plot2}
+ggplot(gm_3,aes(y=gdpPercap, x=year, color=country))+
+  geom_point(size=4, aes(group=country)) +
+  scale_x_log10()
+```
+
+From these results I observe that, while both the GDPs for Italy and New Zealand (*first world countries*) increase over time, the rate of increase has been steadily increasing for Italy while that of New Zealand dipped down sharply in the mid-1990s (approximately) before continuing to increase at a similar rate to Italy, though lower value. India (*third world country*) has a far lower GDP per capita than India or Italy; perhaps a result of a very large population. What do you think?
